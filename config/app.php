@@ -133,7 +133,7 @@ return [
     | this array to grant expanded functionality to your applications.
     |
     */
-
+    'DB' => Illuminate\Support\Facades\DB::class,
     'providers' => [
 
         /*
