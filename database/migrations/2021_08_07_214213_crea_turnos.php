@@ -17,12 +17,14 @@ class CreaTurnos extends Migration
             $table->id();
             $table->foreignId('juego_id')->constrained('juegos');
             $table->foreignId('jugador_id')->constrained('jugadores');
-            $table->integer('carta_1');
-            $table->integer('carta_2');
-            $table->integer('carta_juego');
-            $table->boolean('victoria');
-            $table->decimal('apuesta');
+            $table->integer('orden');
+            $table->integer('carta_1')->nullable();
+            $table->integer('carta_2')->nullable();
+            $table->integer('carta_juego')->nullable();
+            $table->boolean('victoria')->nullable();
+            $table->decimal('apuesta')->nullable();
             $table->string('restantes');
+            $table->string('resultado')->nullable();;
             $table->timestamps();
         });
     }

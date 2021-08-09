@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             cartasSeeds::class,
             barajasSeeds::class,
             barajacartasSeeds::class,
+            jugadoresSeeds::class,
         ]);
     }
 }

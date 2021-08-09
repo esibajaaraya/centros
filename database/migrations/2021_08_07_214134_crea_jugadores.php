@@ -15,6 +15,7 @@ class CreaJugadores extends Migration
     {
         Schema::create('jugadores', function (Blueprint $table) {
             $table->id();
+            $table->string('nombre', 16);
             $table->timestamps();
         });
     }

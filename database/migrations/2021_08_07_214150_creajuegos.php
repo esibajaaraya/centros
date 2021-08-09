@@ -15,7 +15,12 @@ class Creajuegos extends Migration
     {
         Schema::create('juegos', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('baraja_id')->constrained('barajas');
             $table->string('nombre');
+            $table->integer('cantidad_barajas');
+            $table->integer('minima');
+            $table->integer('pozo');
+            $table->boolean('terminado');
             $table->timestamps();
         });
     }
