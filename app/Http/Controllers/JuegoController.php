@@ -51,6 +51,7 @@ class JuegoController extends Controller
             $jj->juego_id = $juego->id;
             $jj->jugador_id = $jugador;
             $jj->orden = $i;
+            $jj->dinero = 2000;
             $jj->save();
             $i++;
         }
@@ -98,6 +99,8 @@ class JuegoController extends Controller
     public function jugar($turno_id, $apuesta)
     {
         $turno = Turno::find($turno_id);
+        $juego = $turno->juego;
+        $jugador = JuegoJugador::where([['juego_id', $turno->juego_id], ['jugador_id', $turno->jugador_id]])->first();
         $turno->apuesta = $apuesta;
         $restantes = explode("|", $turno->restantes);
         shuffle($restantes);
@@ -113,18 +116,38 @@ class JuegoController extends Controller
             $men = $c1->carta->valor;
             $may = $c2->carta->valor;
         }
+
         if ($carta->carta->valor > $men && $carta->carta->valor < $may) {
             $turno->victoria = true;
-            $turno->resultado = $carta->carta->nombre. $carta->palo->simbolo . ' está en medio de ' . $c1->carta->nombre . $c1->palo->simbolo. ' y ' . $c2->carta->nombre . $c2->palo->simbolo . '. '. $turno->jugador->nombre . " gana " . ($apuesta * $turno->juego->minima)*2;
+            $turno->resultado = $turno->jugador->nombre . " gana " . $apuesta*2 .'. '. $carta->carta->nombre. $carta->palo->simbolo . ' está en medio de ' . $c1->carta->nombre . $c1->palo->simbolo. ' y ' . $c2->carta->nombre . $c2->palo->simbolo;
+            $juego->pozo = $juego->pozo - $apuesta;
+            $jugador->dinero = $jugador->dinero + $apuesta*2;
         } else {
             $turno->victoria = false;
-            $turno->resultado = $carta->carta->nombre. $carta->palo->simbolo . ' no está en medio de ' . $c1->carta->nombre . $c1->palo->simbolo. ' y ' . $c2->carta->nombre . $c2->palo->simbolo . '. '. $turno->jugador->nombre . " pierde " . $apuesta * $turno->juego->minima;
+            $turno->resultado = $turno->jugador->nombre . " pierde " . $apuesta . ". ".$carta->carta->nombre. $carta->palo->simbolo . ' no está en medio de ' . $c1->carta->nombre . $c1->palo->simbolo. ' y ' . $c2->carta->nombre . $c2->palo->simbolo;
+            $juego->pozo = $juego->pozo + $apuesta;
+            $jugador->dinero = $jugador->dinero - $apuesta;
         }
+        $jugador->save();
         $turno->save();
+        $juego->save();
 
         return response()->json([
-            'carta_juego' => $carta->carta->nombre. $carta->palo->simbolo,
-            'resultado' => $turno->resultado
+            'carta_juego' => $carta->carta->nombre. "_".$carta->palo->id.".png",
+            'resultado' => $turno->resultado,
+            'pozo' => $juego->pozo
+        ]);
+    }
+
+    public function refresar($juego_id)
+    {
+        $juego = Juego::find($juego_id);
+
+
+        return response()->json([
+            'carta_juego' => $carta->carta->nombre. "_".$carta->palo->id.".png",
+            'resultado' => $turno->resultado,
+            'pozo' => $juego->pozo
         ]);
     }
 }

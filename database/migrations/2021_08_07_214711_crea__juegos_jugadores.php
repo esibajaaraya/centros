@@ -18,6 +18,7 @@ class CreaJuegosJugadores extends Migration
             $table->foreignId('juego_id')->constrained('juegos');
             $table->foreignId('jugador_id')->constrained('jugadores');
             $table->integer('orden');
+            $table->double('dinero');
             $table->timestamps();
         });
     }
